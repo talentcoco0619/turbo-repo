@@ -1,81 +1,31 @@
-# Turborepo starter
+# turbo-repo
 
-This is an official starter Turborepo.
 
-## Using this example
+Coding Assignment (Monorepo Microservice for E-Commerce)
 
-Run the following command:
+Scenario:
 
-```sh
-npx create-turbo@latest
-```
+You are working on an e-commerce platform using a monorepo structure. The repository contains two main apps: 
+    ● Store Dashboard: For managing products, orders, and customer interactions (Next.js). 
+    ● Store: The customer-facing service (Next.js).
 
-## What's inside?
+You need to create a simple microservice that:
+Handles product inventory updates across both the store and the dashboard.
+The service should interact with a Postgres database using DB Queries or any ORM of your choice (Drizzle and Prisma preferred).
+The service should expose a REST API to: ○ Update inventory when an order is placed. ○ Fetch inventory details for the store front.
+Task:
 
-This Turborepo includes the following packages/apps:
+Set up a basic microservice using TypeScript, and Prisma that:
+○ Receives a POST request to update inventory when a product is purchased. ○ Receives a GET request to return the current inventory of a product.
+Assume the database structure is as follows: 
+○ products table: 
+    ■ id (uuid, primary key) 
+    ■ name (varchar) 
+    ■ inventory_count (integer)
+Upload this task in a git repository and share the same on
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+Key Constraints: 
+    ● Implement efficient error handling, particularly for cases where inventory updates would fail (e.g., inventory count going negative). 
+    ● Please don’t add any kind of authentication, just a simple counter on store for the current inventory and an input on the dashboard side. 
+    ● Show how the microservice would be integrated into a Turbo monorepo with both dashboard and store running simultaneously. 
+    ● You are not expected to create a user interface neither you’d be judged on it, however, it would be good for presentation purposes.
