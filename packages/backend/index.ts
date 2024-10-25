@@ -4,22 +4,14 @@ import cors from "cors";
 
 const app = express();
 const prisma = new PrismaClient();
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 
-// Update inventory when an order is placed
 app.post("/inventory/update", async (req, res) => {
   const { productId, updated_quantity, updated_price } = req.body;
   console.log(updated_quantity);
 
   try {
-    // const product = await prisma.product.findUnique({
-    //   where: { id: productId },
-    // });
-    // if (!product || product.quantity < sold_quantity) {
-    //     return res.status(400).json({ error: 'Insufficient inventory' });
-    // }
-
     await prisma.product.update({
       where: { id: productId },
       data: { quantity: updated_quantity, price: updated_price },
@@ -36,10 +28,9 @@ app.post("/inventory/order", async (req, res) => {
   console.log(quantities);
 
   try {
-    // Iterate over each productId in the quantities object
     for (const productId in quantities) {
       const sold_quantity = quantities[productId];
-      console.log(sold_quantity)
+      console.log(sold_quantity);
 
       // Fetch the current product to get the existing quantity
       const product = await prisma.product.findUnique({
@@ -67,8 +58,6 @@ app.post("/inventory/order", async (req, res) => {
   }
 });
 
-// @ts-ignore
-// Fetch inventory details for a product
 app.get("/inventory/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -93,7 +82,6 @@ app.get("/inventory", async (req, res) => {
   res.status(200).json(product);
 });
 
-// Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Inventory service running on port ${PORT}`);

@@ -14,7 +14,7 @@ export const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
           onClick={onClose}
           aria-label="Close modal"
         >
-          &times; {/* Larger close icon */}
+          &times; 
         </button>
         {children}
       </div>

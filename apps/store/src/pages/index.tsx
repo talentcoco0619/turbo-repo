@@ -1,10 +1,9 @@
 import { Navbar } from "@repo/ui/navbar";
-import Link from "next/link";
 import Image from "next/image";
 import { Card, CardFooter, CardHeader } from "../components/ui/card";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Modal } from "../components/modal"; // Import the Modal component
+import { Modal } from "../components/modal";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useRouter } from 'next/navigation';
 
 type Product = {
   id: number;
@@ -25,10 +23,8 @@ type Product = {
 };
 
 export default function Store() {
-  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editedProduct, setEditedProduct] = useState<Product | null>(null);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
 
   const toggleModal = () => {
@@ -38,23 +34,33 @@ export default function Store() {
   const handleOrder = async () => {
     const isOrderValid = products.every(product => {
       const orderedQuantity = quantities[product.id] ?? 0;
-      return orderedQuantity <= product.quantity;
+      return orderedQuantity <= product.quantity && orderedQuantity >= 0;
+    });
+
+    const areAllQuantitiesZero = products.every(product => {
+      const orderedQuantity = quantities[product.id] ?? 0;
+      return orderedQuantity === 0;
     });
 
     if (!isOrderValid) {
-      alert("Order with correct amount."); // Show error message
-      return; // Exit the function if the order is invalid
+      alert("Order with correct amount."); 
+      return; 
+    }
+
+    if (areAllQuantitiesZero) {
+      alert("Please order at least one item."); 
+      return; 
     }
     
     try {
       const response = await axios.post("http://localhost:4000/inventory/order", {
         quantities,
       });
-      alert(`Order successful: ${response.data.message}`); // Display the response message
-      router.push("/");
+      alert(`Order successful: ${response.data.message}`); 
+      toggleModal();
     } catch (error) {
       console.error("Failed to update product:", error);
-      alert("Failed to update product. Please try again."); // Alert on error
+      alert("Failed to update product. Please try again."); 
 
     }
   }
@@ -76,6 +82,28 @@ export default function Store() {
 
   return (
     <div className="h-full">
+    <Navbar>Store</Navbar>
+      <main className="p-20 h-full flex items-center justify-center gap-6">
+        {products.map((product, index) => (
+          <Card className="bg-primary/10 rounded-xl cursor-pointer hover:opacity-75 transition border-0">
+            <CardHeader className="text-center text-muted-foreground">
+              <div className="relative w-64 h-64">
+                <Image
+                  src={`/${product.name.toLowerCase()}.jpg`}
+                  fill
+                  className="rounded-xl object-cover"
+                  alt="Product"
+                ></Image>
+              </div>
+              <p className="font-bold text-xl">{product.name}</p>
+            </CardHeader>
+            <CardFooter className="flex items-center justify-between text-xs text-muted-forground text-md">
+              <p>Price: ${product.price}</p>
+              <p>Quantity: {product.quantity} </p>
+            </CardFooter>
+          </Card>
+        ))}
+      </main>
       <div className="w-full flex items-center justify-center">
         <Button
           variant="secondary"

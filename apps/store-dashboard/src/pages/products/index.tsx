@@ -11,7 +11,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-
 type Product = {
   id: number;
   name: string;
@@ -23,7 +22,6 @@ const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedProduct, setEditedProduct] = useState<Product | null>(null);
-
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -40,28 +38,27 @@ const ProductsPage = () => {
 
   const handleSaveClick = async () => {
     if (editedProduct !== null) {
-        try {
-            // Send a POST request to update the product in the database
-            // await axios.post(`/inventory/${editedProduct.id}`, editedProduct);
+      try {
+        if (editedProduct.price <= 0 || editedProduct.quantity < 0) {
+          alert("Set the price or amount correctly.");
+          return;
+        }
 
-            await axios.post("http://localhost:4000/inventory/update", {
-                productId: editedProduct.id,
-                updated_quantity: editedProduct.quantity,
-                updated_price: editedProduct.price
-              });
-    
-            // Update the local state with the edited product
-            const updatedProducts = [...products];
-            updatedProducts[editIndex!] = editedProduct;
-            setProducts(updatedProducts);
-          } catch (error) {
-            console.error("Failed to update product:", error);
-            // Optionally, handle the error (e.g., show a notification to the user)
-          } finally {
-            // Reset the edit state
-            setEditIndex(null);
-            setEditedProduct(null);
-          }
+        await axios.post("http://localhost:4000/inventory/update", {
+          productId: editedProduct.id,
+          updated_quantity: editedProduct.quantity,
+          updated_price: editedProduct.price,
+        });
+
+        const updatedProducts = [...products];
+        updatedProducts[editIndex!] = editedProduct;
+        setProducts(updatedProducts);
+      } catch (error) {
+        console.error("Failed to update product:", error);
+      } finally {
+        setEditIndex(null);
+        setEditedProduct(null);
+      }
     }
   };
 
@@ -90,14 +87,12 @@ const ProductsPage = () => {
             <TableHead className="text-center">Update</TableHead>
           </TableRow>
         </TableHeader>
-        
+
         <TableBody className="text-center text-muted-forground">
           {products.map((product, index) => (
             <TableRow key={product.id}>
               <TableCell className="font-medium">{index + 1}</TableCell>
-              <TableCell>
-                {product.name}
-              </TableCell>
+              <TableCell>{product.name}</TableCell>
               <TableCell className="flex justify-center">
                 <Image
                   src={`/${product.name.toLowerCase()}.jpg`}
@@ -113,7 +108,9 @@ const ProductsPage = () => {
                     type="number"
                     className="bg-primary/20 rounded text-center text-primary"
                     value={editedProduct?.price || ""}
-                    onChange={(e) => handleInputChange("price", Number(e.target.value))}
+                    onChange={(e) =>
+                      handleInputChange("price", Number(e.target.value))
+                    }
                   />
                 ) : (
                   "$" + product.price
@@ -125,7 +122,9 @@ const ProductsPage = () => {
                     type="number"
                     className="bg-primary/20 rounded text-center text-primary"
                     value={editedProduct?.quantity || ""}
-                    onChange={(e) => handleInputChange("quantity", Number(e.target.value))}
+                    onChange={(e) =>
+                      handleInputChange("quantity", Number(e.target.value))
+                    }
                   />
                 ) : (
                   product.quantity
